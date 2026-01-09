@@ -5,7 +5,16 @@ This document explains how to create and manage Instant Access (IA) crash consis
 **NOTE: This feature should not be used for production workloads until General Availability (GA). Microsoft Privacy Statement: https://privacy.microsoft.com/en-us/privacystatement**
 
 ## Prerequisites
-- Sign up [here](https://forms.office.com/r/jUVfGNzfJ8) for private preview.
+- Sign up [here](https://forms.office.com/r/jUVfGNzfJ8) for private preview. ETA takes ~5 business days.
+- Customer can sign up by themselves using the below documentation:
+  - Documentation on how to enable the AFEC:
+    - Register - https://learn.microsoft.com/en-us/powershell/module/az.resources/register-azproviderfeature?view=az…
+    - Unregister - https://learn.microsoft.com/en-us/powershell/module/az.resources/unregister-azproviderfeature?view=…
+    - Get - https://learn.microsoft.com/en-us/powershell/module/az.resources/get-azproviderfeature?view=azps-15…
+  - AFECs to be enabled are:
+    - Microsoft.Compute/CrashConsistentSnapshotForDirectDriveDisks
+    - Microsoft.Compute/CrashConsistentInstantAccessSnapshotForDirectDriveDisks
+
 - Create a VM with Premium SSD v2 and/or Ultra disks as data disks and Premium SSD v1 OS disk. 
 - API version **2025-04-01** or later is supported.
 - Regions Supported: EASTUS2EUAP.
