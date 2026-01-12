@@ -30,7 +30,9 @@ This document explains how to create and manage Instant Access (IA) crash consis
 - **ConsistencyMode:** Restore points supports 2 consistency modes app consistent and crash consistent. This document is specifically for crash consistent mode. 
 - **Instant Access (IA):** Allows immediate restoration of disks from snapshots, with a default duration of 5 hours (configurable between 60 and 300 minutes). Its a boolean property to be enabled at the restore point collection level.
 - **instantAccessDurationMinutes:** Integer property to set IA duration (in minutes) at the restore point level.
-- **InstantAccessState:** Indicates the access status of all disk restore points within a restore point (e.g., Pending, Available, InstantAccess, AvailableWithInstantAccess). Detailed table for each of the state is mentioned in step 3 below.
+- **InstantAccessState:** Indicates the access status of all disk restore points within a restore point (possible values are: Pending, Available, InstantAccess, AvailableWithInstantAccess). Detailed table for each of the state is mentioned in step 3 below.
+- **SnapshotAccessState:** Indicates the access status of single disk restore points within a restore point (possible values are: Pending, Available, InstantAccess, AvailableWithInstantAccess).
+  
 ## Steps to be followed
 ### Step 1: Enable Instant Access on Restore Point Collection
   Use the following REST API call to create a restore point collection with IA enabled on the VM that was created as mentioned in the perquisites above. 
