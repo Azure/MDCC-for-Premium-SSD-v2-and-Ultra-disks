@@ -5,21 +5,18 @@ This document explains how to create and manage Instant Access (IA) crash consis
 **NOTE: This feature should not be used for production workloads until General Availability (GA). Microsoft Privacy Statement: https://privacy.microsoft.com/en-us/privacystatement**
 
 ## Prerequisites
-- Sign up [here](https://forms.office.com/r/jUVfGNzfJ8) for private preview. ETA takes ~5 business days.
-- Customer can sign up by themselves using the below documentation:
-  - Documentation on how to enable the AFEC:
-    - Register - https://learn.microsoft.com/en-us/powershell/module/az.resources/register-azproviderfeature?view=az…
-    - Unregister - https://learn.microsoft.com/en-us/powershell/module/az.resources/unregister-azproviderfeature?view=…
-    - Get - https://learn.microsoft.com/en-us/powershell/module/az.resources/get-azproviderfeature?view=azps-15…
-  - AFECs to be enabled are:
-    - Microsoft.Compute/CrashConsistentSnapshotForDirectDriveDisks
-    - Microsoft.Compute/CrashConsistentInstantAccessSnapshotForDirectDriveDisks
-
+-  1. Open the Cloud shell (PowerShell) from portal. Direct link -> <a href="https://shell.azure.com/" rel="noreferrer noopener" title="https://shell.azure.com/" target="_blank">https://shell.azure.com/</a>
+-  2. Ensure your using the subscription which will be used for testing this feature.
+-  3. Run
+      `Register-AzProviderFeature -FeatureName 'CrashConsistentSnapshotForDirectDriveDisks' -ProviderNamespace 'Microsoft.Compute'`
+-  4. Run
+      `Register-AzProviderFeature -FeatureName 'CrashConsistentInstantAccessSnapshotForDirectDriveDisks' -ProviderNamespace 'Microsoft.Compute'`
 - Create a VM with Premium SSD v2 and/or Ultra disks as data disks and Premium SSD v1 OS disk. 
 - API version **2025-04-01** or later is supported.
 - Regions Supported: EASTUS2EUAP.
 - Client tools supported: REST API and SDK.
 - VM SKUs that support SCSI disk controller. E.g. Mv2-series, Mdsv2, Msv2, B-series (Bsv2, Basv2), D-series (Dv2, Dsv2), Dasv5 / Dadsv5, Esv5 / Edsv5, F-series (Fsv2), G-series, GPU families (NC, ND, NV)
+- Please check below on how to [disable the feature](#Disable-Instant-Access-on-Restore-Point-Collection) along with unregistering this feature.
 ## Unsupported Configurations
 - More than 50 restore points should not be created concurrently at a given time per subscription per region.
 - Security types not supported:
@@ -146,6 +143,35 @@ GET https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{
 }
 ```
 - snapshotAccessState: Indicates IA status of individual disk restore point.
+
+### Step 6: Disable Instant Access on Restore Point Collection
+  Use the following REST API call to disable IA enabled on the VM. 
+  ```http
+  PATCH https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/restorePointCollections/{restorePointCollectionName}?api-version=2025-04-01
+  ```
+#### Request Body Example:
+```json
+  {
+    "location": "<region>",
+    "properties": {
+      "source": {
+        "id": "<VM Arm Id>"
+      },
+      "instantAccess": false
+    },
+    "tags": {
+      "myTag1": "tagValue1"
+    }
+  }
+  ```
+To unregister this feature. 
+Open the Cloud shell (PowerShell) from portal. Direct link -> <a href="https://shell.azure.com/" rel="noreferrer noopener" title="https://shell.azure.com/" target="_blank">https://shell.azure.com/</a> and run the below commands:  
+
+- Run
+      `Unregister-AzProviderFeature -FeatureName 'CrashConsistentSnapshotForDirectDriveDisks' -ProviderNamespace 'Microsoft.Compute'`
+- Run
+      `Unregister-AzProviderFeature -FeatureName 'CrashConsistentInstantAccessSnapshotForDirectDriveDisks' -ProviderNamespace 'Microsoft.Compute'`
+
 
 # Next Steps
 Learn more about Backup and restore options for virtual machines in Azure.
